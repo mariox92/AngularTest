@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
+import { forkJoin, map, mergeMap } from 'rxjs';
 
 @Component({
   selector: 'app-pokemon',
@@ -8,35 +9,36 @@ import { HttpClient } from "@angular/common/http";
 })
 export class PokemonComponent {
 
-  pokemonNames = [];
+  pokemonNames: string[] = [];
 
   constructor(private http: HttpClient) {
-    var u = this.getPokemonApiUrl(true);
-    this.getPokemonNamesByPokemonTypes(u, 'ditto');
+    this.getPokemonNamesByPokemonTypes('ditto');
   }
 
-  getPokemonApiUrl(useLastVersion) {
-    if (useLastVersion === true) {
-      return 'https://pokeapi.co/api/v2/pokemon/';
-    } else {
-      return 'https://pokeapi.co/api/v1/pokemon/';
-    }
+  private getPokemonApiUrl(useLastVersion: boolean): string {
+    const apiVersion = useLastVersion ? 'v2' : 'v1';
+    return 'https://pokeapi.co/api/' + apiVersion + '/pokemon/';
   }
 
-  getPokemonNamesByPokemonTypes(url, pokemonName) {
-    this.pokemonNames = [];
+  getPokemonNamesByPokemonTypes(pokemonName: string) {
+    const url = this.getPokemonApiUrl(true);
+
     this.http.get(url + pokemonName)
-      .subscribe((data: any) => {
-        for (var i = 0; i < data.types.length; i++) {
-          var u = data.types[i].type.url;
-          this.http.get(u)
-            .subscribe((item: any) => {
-              for (var j = 0; j < item.pokemon.length; j++) {
-                var n = item.pokemon[j].pokemon.name;
-                this.pokemonNames.push(n);
-              }
-            });
-        }
+      .pipe(
+        mergeMap((pokemon: any) =>
+          forkJoin(pokemon.types.map((pokemonType: any) =>
+            this.http.get(pokemonType.type.url)
+          ))
+        ),
+        map((pokemonTypes: any) =>
+          pokemonTypes
+            .map((type: any) => type.pokemon)
+            .flat()
+            .map((pokemon: any) => pokemon.pokemon.name)
+        )
+      )
+      .subscribe(pokemonNames => {
+        this.pokemonNames = pokemonNames;
       });
   }
 }
