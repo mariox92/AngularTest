@@ -1,0 +1,28 @@
+<form [formGroup]="form">
+
+  <div class="row" formArrayName="users" *ngFor="let user of usersForm['controls']; let i = index">
+    <div class="col-xs-12 col-md-6 col-lg-6">
+
+      <div class="row flex-layout">
+        <div class="form-group col-xs-10" [formGroupName]="i">
+          <label [for]="'name_' + (i + 1)">User {{i + 1}}:</label>
+          <input type="text"
+                 formControlName="name"
+                 id="{{'name_' + (i + 1)}}"
+                 maxlength="50"
+                 class="form-control">
+        </div>
+        <div class="col-xs-2">
+          <button type="button" class="btn btn-danger" (click)="removeUser(i)">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <button type="button" class="btn btn-success" (click)="addUser()">Add</button>
+    </div>
+  </div>
+
+</form>
