@@ -1,0 +1,28 @@
+<div class="container">
+
+  <div class="row center-block">
+    <h3>Profile Page</h3>
+  </div>
+
+  <div>
+    <ul class="nav nav-tabs">
+      <li>
+        <a role="tab" routerLink="./tweets" routerLinkActive="active">Tweets</a>
+      </li>
+      <li>
+        <a role="tab" routerLink="./tweets-details" routerLinkActive="active">Tweets y respuestas</a>
+      </li>
+      <li>
+        <a role="tab" routerLink="./media" routerLinkActive="active">Fotos y videos</a>
+      </li>
+      <li>
+        <a role="tab" routerLink="./likes" routerLinkActive="active">Me gusta</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tab-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
