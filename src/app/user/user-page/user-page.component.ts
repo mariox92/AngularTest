@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { User } from '../user';
+import { FormGroup } from "@angular/forms";
 
 @Component({
   selector: 'user-page',
@@ -8,11 +9,16 @@ import { User } from '../user';
       <h3>User page</h3>
     </div>
     <hr/>
-    <user-form [users]="users"></user-form>
+    <user-form [users]="users" (formReady)="form = $event"></user-form>
+    <div class="content-block">
+      <button class="btn btn-default" (click)="checkValidForm()">Check form</button>
+    </div>
   `,
   styleUrls: ['./user-page.component.scss']
 })
 export class UserPageComponent {
+
+  form: FormGroup;
 
   users: User[] = [
     { id: '1', name: 'Vanesa' },
@@ -21,4 +27,8 @@ export class UserPageComponent {
     { id: '4', name: 'Laura' },
     { id: '5', name: 'Ramiro' }
   ];
+
+  checkValidForm(): void {
+    console.log('Form is ' + (this.form.valid ? 'valid' : 'invalid'));
+  }
 }

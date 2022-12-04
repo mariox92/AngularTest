@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../user';
 
@@ -10,6 +10,8 @@ import { User } from '../user';
 export class UserFormComponent implements OnInit {
 
   @Input() users: User[];
+
+  @Output() formReady = new EventEmitter<FormGroup>();
 
   form: FormGroup;
 
@@ -25,6 +27,8 @@ export class UserFormComponent implements OnInit {
 
     // To listen for ANY change in the array (including adding/removing users)
     this.usersForm.valueChanges.subscribe(() => console.log('Changes in users array'));
+
+    this.formReady.emit(this.form);
   }
 
   initializeUsersForm(): void {
